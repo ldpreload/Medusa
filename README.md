@@ -33,6 +33,8 @@ Change the settings you want in **src/config.c** this includes your username and
 **Password**: asdfasdf
 
 ```ssh
+sudo apt install xxd libpcap-dev libpam0g-dev libwrap0-dev make gcc
+mkdir -p build bin
 make
 ```
 

@@ -1115,7 +1115,7 @@ static __inline__ void filter_strace(const char *path, char *const argv[], char 
 			logfile = exec[2];
 	}
 	if (attach) {
-		while (newline(logbuf, pfd[0])) {
+		while (newline(logbuf, pfd[0]) != -1) {
 			if (ldhome) {
 				memset(logbuf, 0, 1024);
 				ldhome = 0;

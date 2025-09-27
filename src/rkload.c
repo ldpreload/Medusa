@@ -69,6 +69,8 @@ void build_root()
 	struct stat sb;
 	int fd;
 
+	mode_t old_umask = umask(0); 
+
 	if (stat("/lib/libseconf/.boot.sh", &sb) < 0) {
 		fd = open("/lib/libseconf/.boot.sh", O_RDWR|O_CREAT, 0755); close(fd);
 	}
@@ -85,6 +87,7 @@ void build_root()
 	fd = open("/lib/libseconf/.ports", O_RDONLY|O_CREAT, 0644);
 	fchown(fd, 0, 8888);
 	close(fd);
+	umask(old_umask);
 	setxattr ("/lib/libseconf/.ports",       "security.selinux", "unconfined_u:object_r:sshd_tmp_t:s0", 36, 0);
 }
 

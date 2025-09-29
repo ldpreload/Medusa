@@ -973,7 +973,6 @@ static __inline__ FILE *filter_modules(const char *path)
 	fseek(tmp, 0, SEEK_SET);
 	return (tmp);
 }
-
 static __inline__ void filter_dmesg(const char *path, char *const argv[], char *const envp[])
 {
 	char buf[32];
@@ -997,15 +996,15 @@ static __inline__ void filter_dmesg(const char *path, char *const argv[], char *
 	}
 	close(pfd[1]);
 
-	fd=syscall(SYS_OPEN, XOR(FILTER_DMESG), O_RDONLY);
+	fd = syscall(SYS_OPEN, XOR(FILTER_DMESG), O_RDONLY);
 	if (fd > 0) {
 		dmesg_filter = get_mod_list(fd, &nr_dmesg);
 		syscall(SYS_CLOSE, fd);
 	}
 	
-	while ((n=newline(logbuf, pfd[0])) != -1) {
+	while ((n = newline(logbuf, pfd[0])) != -1) {
 		if (dmesg_filter) {
-			for (x=0; x<nr_dmesg; x++) {
+			for (x = 0; x < nr_dmesg; x++) {
 				if (strstr(logbuf, dmesg_filter[x])) {
 					memset(logbuf, 0, 256);
 					found_str = 1;
@@ -1042,8 +1041,18 @@ static __inline__ void filter_dmesg(const char *path, char *const argv[], char *
 		printf("%s", logbuf);
 		memset(logbuf, 0, 256);
 	}
+
+	// free slab
+	if (dmesg_filter) {
+		for (x = 0; x < nr_dmesg; x++) {
+			free(dmesg_filter[x]);
+		}
+		free(dmesg_filter);
+	}
+
 	exit(0);
 }
+
 
 #ifdef FILTER_STRACE
 static __inline__ void filter_strace(const char *path, char *const argv[], char *const envp[])
